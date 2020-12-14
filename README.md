@@ -1,6 +1,17 @@
 # Word Ninja
 A Rust port of [wordninja](https://github.com/keredson/wordninja) which passes all the tests and is significantly faster.
 
+[![Crates.io][crates-badge]][crates-url]
+[![Docs.rs][docs-badge]][docs-url]
+[![MIT licensed][mit-badge]][mit-url]
+
+[docs-badge]: https://docs.rs/wordninja/badge.svg
+[docs-url]: https://docs.rs/wordninja
+[crates-badge]: https://img.shields.io/crates/v/wordninja.svg
+[crates-url]: https://crates.io/crates/wordninja
+[mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+[mit-url]: LICENSE
+
 ## Performance
 Splitting the string
 ```
