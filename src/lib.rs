@@ -1,12 +1,16 @@
+//! A Rust port of the [Word Ninja](https://github.com/keredson/wordninja) English word splitting library.
+
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::{borrow::Cow, cmp::min};
 
 lazy_static! {
+    /// The default language model from Word Ninja.
     pub static ref DEFAULT_MODEL: LanguageModel<'static> =
         LanguageModel::new_model(include_str!("../wordninja_words.txt"));
 }
 
+/// A Word Ninja language model.
 #[derive(Debug, Clone)]
 pub struct LanguageModel<'s> {
     wordcost: HashMap<&'s str, f64>,
@@ -14,6 +18,7 @@ pub struct LanguageModel<'s> {
 }
 
 impl<'s> LanguageModel<'s> {
+    /// Creates a language model from a list of words.
     pub fn new(words: &[&'s str]) -> Self {
         let count = words.len();
         let count_ln = (count as f64).ln();
@@ -32,12 +37,12 @@ impl<'s> LanguageModel<'s> {
 
         Self { wordcost, maxword }
     }
-
+    /// Creates a language model from a list of words separated by newlines, empty lines are ignored.
     pub fn new_model(model: &'s str) -> Self {
         let words: Vec<&str> = model.lines().filter(|s| !s.is_empty()).collect();
         Self::new(&words)
     }
-
+    /// Splits a string of concatenated words.
     pub fn split<'a>(&self, s: &'a str) -> Vec<Cow<'a, str>> {
         s.split(|c: char| !(c.is_ascii_alphanumeric() || c == '\''))
             .filter(|s| !s.is_empty())
