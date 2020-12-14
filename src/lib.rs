@@ -60,7 +60,7 @@ impl<'s> LanguageModel<'s> {
 
         while i > 0 {
             let (c, k) = self.best_match(s, &cost, i);
-            assert_eq!(c, cost[i]);
+            assert!((c - cost[i]).abs() < f64::EPSILON);
             // Apostrophe and digit handling (added by Genesys)
             let mut new_token = true;
             let token = &s[i - k..i];
