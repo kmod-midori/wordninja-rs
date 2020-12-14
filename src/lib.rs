@@ -38,10 +38,11 @@ impl<'s> LanguageModel<'s> {
         Self::new(&words)
     }
 
-    pub fn split<'a>(&'a self, s: &'a str) -> impl Iterator<Item = Cow<'a, str>> {
+    pub fn split<'a>(&self, s: &'a str) -> Vec<Cow<'a, str>> {
         s.split(|c: char| !(c.is_ascii_alphanumeric() || c == '\''))
             .filter(|s| !s.is_empty())
-            .flat_map(move |s| self.split_part(s))
+            .flat_map(|s| self.split_part(s))
+            .collect()
     }
 
     fn split_part<'a>(&self, s: &'a str) -> impl Iterator<Item = Cow<'a, str>> {
@@ -115,11 +116,11 @@ mod tests {
     #[test]
     fn simple() {
         assert_eq!(
-            DEFAULT_MODEL.split("derekanderson").collect::<Vec<_>>(),
+            DEFAULT_MODEL.split("derekanderson"),
             vec!["derek", "anderson"]
         );
         assert_eq!(
-            DEFAULT_MODEL.split("DEREKANDERSON").collect::<Vec<_>>(),
+            DEFAULT_MODEL.split("DEREKANDERSON"),
             vec!["DEREK", "ANDERSON"]
         );
     }
@@ -127,28 +128,16 @@ mod tests {
     #[test]
     fn with_underscores_etc() {
         let cmp = vec!["derek", "anderson"];
-        assert_eq!(
-            DEFAULT_MODEL.split("derek anderson").collect::<Vec<_>>(),
-            cmp
-        );
-        assert_eq!(
-            DEFAULT_MODEL.split("derek-anderson").collect::<Vec<_>>(),
-            cmp
-        );
-        assert_eq!(
-            DEFAULT_MODEL.split("derek_anderson").collect::<Vec<_>>(),
-            cmp
-        );
-        assert_eq!(
-            DEFAULT_MODEL.split("derek/anderson").collect::<Vec<_>>(),
-            cmp
-        );
+        assert_eq!(DEFAULT_MODEL.split("derek anderson"), cmp);
+        assert_eq!(DEFAULT_MODEL.split("derek-anderson"), cmp);
+        assert_eq!(DEFAULT_MODEL.split("derek_anderson"), cmp);
+        assert_eq!(DEFAULT_MODEL.split("derek/anderson"), cmp);
     }
 
     #[test]
     fn digits() {
         assert_eq!(
-            DEFAULT_MODEL.split("win32intel").collect::<Vec<_>>(),
+            DEFAULT_MODEL.split("win32intel"),
             vec!["win", "32", "intel"]
         );
     }
@@ -156,9 +145,7 @@ mod tests {
     #[test]
     fn apostrophes() {
         assert_eq!(
-            DEFAULT_MODEL
-                .split("that'sthesheriff'sbadge")
-                .collect::<Vec<_>>(),
+            DEFAULT_MODEL.split("that'sthesheriff'sbadge"),
             vec!["that's", "the", "sheriff's", "badge"]
         );
     }
@@ -166,9 +153,6 @@ mod tests {
     #[test]
     fn custom() {
         let model = LanguageModel::new_model(include_str!("../test_lang.txt"));
-        assert_eq!(
-            model.split("derek").collect::<Vec<_>>(),
-            vec!["der", "ek"]
-        );
+        assert_eq!(model.split("derek"), vec!["der", "ek"]);
     }
 }
