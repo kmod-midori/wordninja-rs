@@ -6,6 +6,8 @@ description = "A Rust port of the Word Ninja English word splitting library."
 edition = "2018"
 repository = "https://github.com/chengyuhui/wordninja-rs"
 homepage = "https://github.com/chengyuhui/wordninja-rs"
+license = "MIT"
+categories = ["algorithms", "command-line-utilities", "text-processing"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
