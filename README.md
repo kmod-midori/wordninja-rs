@@ -4,6 +4,7 @@ A Rust port of [wordninja](https://github.com/keredson/wordninja) which passes a
 [![Crates.io][crates-badge]][crates-url]
 [![Docs.rs][docs-badge]][docs-url]
 [![MIT licensed][mit-badge]][mit-url]
+[![AUR][aur-badge]][aur-url]
 
 [docs-badge]: https://docs.rs/wordninja/badge.svg
 [docs-url]: https://docs.rs/wordninja
@@ -11,6 +12,8 @@ A Rust port of [wordninja](https://github.com/keredson/wordninja) which passes a
 [crates-url]: https://crates.io/crates/wordninja
 [mit-badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [mit-url]: LICENSE
+[aur-badge]: https://img.shields.io/aur/version/wordninja-rs.svg
+[aur-url]: https://aur.archlinux.org/packages/wordninja-rs
 
 ## Performance
 Splitting the string
