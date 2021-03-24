@@ -62,3 +62,68 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+
+  build-latest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        rust: [stable]
+
+    steps:
+    - uses: hecrj/setup-rust-action@v1
+      with:
+        rust-version: ${{ matrix.rust }}
+    - uses: actions/checkout@master
+
+    - name: Rust cache
+      uses: Swatinem/rust-cache@v1
+
+    - name: Build linux
+      if: matrix.os == 'ubuntu-latest'
+      run: cargo build --release && mv target/release/wordninja target/release/wordninja-linux
+
+    - name: Upload linux target
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: wordninja-linux
+        path: target/release/wordninja-linux
+
+    - name: Build macOS
+      if: matrix.os == 'macOS-latest'
+      run: cargo build --release && mv target/release/wordninja target/release/wordninja-macos
+    - name: Upload macOS target
+      if: matrix.os == 'macOS-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: wordninja-macos
+        path: target/release/wordninja-macos
+
+    - name: Build windows
+      if: matrix.os == 'windows-latest'
+      run: cargo build --release
+    - name: Upload windows target
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: wordninja-windows
+        path: target/release/wordninja.exe
+
+  release-latest:
+    needs: [check, test, fmt, clippy, build-latest]
+    name: release-latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the artifacts to release
+        uses: actions/download-artifact@v2
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ startsWith(github.ref, 'refs/heads') && 'latest' || null }}
+          prerelease: ${{ startsWith(github.ref, 'refs/heads') }}
+          title: ${{ startsWith(github.ref, 'refs/heads') && 'Latest' || null }}
+          files: |
+            wordninja-linux
+            wordninja-macos
+            wordninja-windows
